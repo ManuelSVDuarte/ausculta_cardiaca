@@ -2,104 +2,64 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulado de Ausculta Cardíaca</title>
+    <title>Simulado Completo de Ausculta Cardíaca</title>
     <style>
-        :root { --primary: #e11d48; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; --success: #22c55e; --error: #ef4444; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: var(--card); width: 100%; max-width: 900px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .screen { display: none; }
-        .active { display: block; }
-        h1, h2 { text-align: center; color: var(--primary); }
-        .table-container { overflow-x: auto; margin: 20px 0; border-radius: 10px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { background: var(--primary); color: white; padding: 12px; text-align: left; }
-        td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        .btn-primary { background: var(--primary); color: white; }
-        .case-box { background: #fff1f2; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 20px; text-align: justify; }
-        .audio-btn { width: 60px; height: 60px; background: var(--primary); border-radius: 50%; cursor: pointer; display: block; margin: 0 auto 20px; border: none; color: white; }
-        input[type="text"] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; margin-bottom: 10px; }
+        :root { --primary: #2563eb; --bg: #f8fafc; --text: #1e293b; }
+        body { font-family: sans-serif; background: var(--bg); padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; width: 100%; max-width: 900px; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .screen { display: none; } .active { display: block; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background: var(--primary); color: white; margin-top: 10px; }
+        .case-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 20px; line-height: 1.6; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div id="start-screen" class="screen active">
-        <h1>Simulado de Ausculta Cardíaca</h1>
-        <h3>Referência de Estudo</h3>
-        <div class="table-container">
-            <table>
-                <thead><tr><th>Patologia</th><th>Ciclo</th><th>Foco Principal</th><th>Característica</th></tr></thead>
-                <tbody>
-                    <tr><td>Estenose Aórtica</td><td>Sistólico</td><td>Base (2º EID)</td><td>Sopro de ejeção, arrastado</td></tr>
-                    <tr><td>Regurgitação Aórtica</td><td>Diastólico</td><td>Borda esternal</td><td>Sopro aspirativo</td></tr>
-                    <tr><td>Insuficiência Mitral</td><td>Sistólico</td><td>Ápice</td><td>Holossistólico, "Tum-shi-tá"</td></tr>
-                    <tr><td>Estenose Mitral</td><td>Diastólico</td><td>Ápice</td><td>Ruflar diastólico</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <button class="btn btn-primary" onclick="startQuiz()">Iniciar Simulado</button>
+        <h1>Simulado: 12 Casos Clínicos</h1>
+        <p>Treine o raciocínio clínico integrando história, exame físico e ausculta.</p>
+        <button class="btn" onclick="startQuiz()">Começar Simulado Aleatório</button>
     </div>
-
     <div id="game-screen" class="screen">
         <div class="case-box" id="case-text"></div>
-        <button class="audio-btn" onclick="playCurrentAudio()">▶️</button>
+        <button class="btn" style="background:#475569" onclick="playCurrentAudio()">Ouvir áudio 🎧</button>
         <audio id="main-audio"></audio>
-        <input type="text" id="user-answer" placeholder="Qual o diagnóstico?">
-        <div id="feedback" style="text-align:center; font-weight:bold; margin:10px 0;"></div>
-        <button id="check-btn" class="btn btn-primary" onclick="checkAnswer()">Conferir</button>
-        <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()">Próximo Caso ➡️</button>
+        <input type="text" id="user-answer" placeholder="Digite o diagnóstico (Estenose Aortica, Regurgitacao Aortica, Regurgitacao Mitral ou Estenose Mitral)...">
+        <div id="feedback" style="text-align:center; margin:10px 0; font-weight:bold;"></div>
+        <button id="check-btn" class="btn" onclick="checkAnswer()">Conferir Resposta</button>
+        <button id="next-btn" class="btn hidden" onclick="nextQuestion()">Próximo Caso ➡️</button>
     </div>
 </div>
-
 <script>
     const database = [
-        { name: 'Estenose Aortica', file: 'estenose_aortica.mp3', ctx: 'Idoso com angina de esforço, síncope e pulso "parvus et tardus". Ao exame, frêmito sistólico na base.' },
-        { name: 'Estenose Mitral', file: 'estenose_mitral.mp3', ctx: 'Paciente com histórico de febre reumática, dispneia progressiva e fibrilação atrial. Ao exame, ictus normolocalizado.' },
-        { name: 'Regurgitacao Mitral', file: 'Regurgitacao_mitral.mp3', ctx: 'Paciente com miocardiopatia dilatada e ictus desviado. Apresenta dispneia de esforço e um som holossistólico na ponta.' },
-        { name: 'Regurgitacao Aortica', file: 'Regurgitacao_aortica.mp3', ctx: 'Paciente hipertenso com dor torácica súbita, pressão divergente e sinal de pulso em martelo d\'água.' }
+        // Estenose Aórtica
+        { name: 'Estenose Aortica', file: 'estenose_aortica.mp3', ctx: 'Caso 1 (EAo): Antônio, 78 anos: Tontura e escurecimento visual aos esforços. Dor precordial opressiva. Pulso parvus et tardus e ictus sustentado.' },
+        { name: 'Estenose Aortica', file: 'estenose_aortica.mp3', ctx: 'Caso 2 (EAo): Ricardo, 38 anos: Cansaço aos esforços na academia. Frêmito sistólico intenso e "ronronar" palpável na base do tórax.' },
+        { name: 'Estenose Aortica', file: 'estenose_aortica.mp3', ctx: 'Caso 3 (EAo): Antônio, 79 anos: Dor precordial e síncope ao subir escadas. Pulso arterial de subida lenta e amplitude reduzida.' },
+        // Regurgitação Aórtica
+        { name: 'Regurgitacao Aortica', file: 'Regurgitacao_aortica.mp3', ctx: 'Caso 1 (IAo): Roberto, 52 anos: Dor súbita e lancinante ("rasgando") nas costas. Pressão arterial divergente (160/50 mmHg).' },
+        { name: 'Regurgitacao Aortica', file: 'Regurgitacao_aortica.mp3', ctx: 'Caso 2 (IAo): Carlos, 65 anos: Desconforto ao deitar e pulsação no pescoço (sinal de Musset). Pulso radial em "martelo d\'água".' },
+        { name: 'Regurgitacao Aortica', file: 'Regurgitacao_aortica.mp3', ctx: 'Caso 3 (IAo): Beatriz, 38 anos: Febre prolongada e calafrios há 3 meses. Pulso capilar rítmico no leito ungueal.' },
+        // Insuficiência Mitral
+        { name: 'Regurgitacao Mitral', file: 'Regurgitacao_mitral.mp3', ctx: 'Caso 1 (IM): Eduardo, 45 anos: Cardiomiopatia dilatada com dispneia progressiva. Ictus desviado e difuso à esquerda.' },
+        { name: 'Regurgitacao Mitral', file: 'Regurgitacao_mitral.mp3', ctx: 'Caso 2 (IM): Juliana, 28 anos: Palpitações e fadiga desproporcional. Precórdio hipercinético e agitação palpável.' },
+        { name: 'Regurgitacao Mitral', file: 'Regurgitacao_mitral.mp3', ctx: 'Caso 3 (IM): Ricardo, 55 anos: Dor súbita e dispneia aguda ("pulmão cheio de água"). Sem edema periférico, quadro súbito.' },
+        // Estenose Mitral
+        { name: 'Estenose Mitral', file: 'estenose_mitral.mp3', ctx: 'Caso 1 (EM): Maria, 48 anos: Cansaço progressivo com histórico de dores articulares na infância. Frequência cardíaca irregular.' },
+        { name: 'Estenose Mitral', file: 'estenose_mitral.mp3', ctx: 'Caso 2 (EM): Ana, 26 anos: Tosse seca e dispneia. Cianose leve em extremidades e onda "a" proeminente na jugular.' },
+        { name: 'Estenose Mitral', file: 'estenose_mitral.mp3', ctx: 'Caso 3 (EM): José, 55 anos: Episódio transitório de fraqueza no braço (isquemia). Ritmo cardíaco totalmente irregular ao exame.' }
     ];
 
     let currentIdx = 0;
-    
-    function startQuiz() {
-        document.getElementById('start-screen').classList.remove('active');
-        document.getElementById('game-screen').classList.add('active');
-        showQuestion();
-    }
+    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
+    shuffle(database); // Embaralha ao iniciar
 
-    function showQuestion() {
-        const q = database[currentIdx];
-        document.getElementById('case-text').innerText = q.ctx;
-        document.getElementById('main-audio').src = q.file;
-        document.getElementById('check-btn').classList.remove('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('feedback').innerText = '';
-    }
-
+    function startQuiz() { document.getElementById('start-screen').classList.remove('active'); document.getElementById('game-screen').classList.add('active'); showQuestion(); }
+    function showQuestion() { const q = database[currentIdx]; document.getElementById('case-text').innerText = q.ctx; document.getElementById('main-audio').src = q.file; document.getElementById('check-btn').classList.remove('hidden'); document.getElementById('next-btn').classList.add('hidden'); document.getElementById('feedback').innerText = ''; document.getElementById('user-answer').value = ''; }
     function playCurrentAudio() { document.getElementById('main-audio').play(); }
-
-    function checkAnswer() {
-        const user = document.getElementById('user-answer').value.toLowerCase();
-        const correct = database[currentIdx].name.toLowerCase();
-        const feedback = document.getElementById('feedback');
-        if(user.includes(correct.split(' ')[0])) {
-            feedback.innerText = "✅ Correto!";
-            feedback.style.color = "green";
-        } else {
-            feedback.innerText = "❌ Incorreto. Era: " + database[currentIdx].name;
-            feedback.style.color = "red";
-        }
-        document.getElementById('check-btn').classList.add('hidden');
-        document.getElementById('next-btn').classList.remove('hidden');
-    }
-
-    function nextQuestion() {
-        currentIdx = (currentIdx + 1) % database.length;
-        showQuestion();
-    }
+    function checkAnswer() { const user = document.getElementById('user-answer').value.toLowerCase(); const correct = database[currentIdx].name.toLowerCase(); const feedback = document.getElementById('feedback'); if(user.includes(correct.split(' ')[0])) { feedback.innerText = "✅ Correto!"; feedback.style.color = "green"; } else { feedback.innerText = "❌ Incorreto. Era: " + database[currentIdx].name; feedback.style.color = "red"; } document.getElementById('check-btn').classList.add('hidden'); document.getElementById('next-btn').classList.remove('hidden'); }
+    function nextQuestion() { currentIdx = (currentIdx + 1) % database.length; showQuestion(); }
 </script>
 </body>
 </html>
