@@ -10,6 +10,8 @@
         .screen { display: none; } .active { display: block; }
         .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; background: var(--primary); color: white; margin-top: 10px; }
         .case-box { background: #eff6ff; border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 20px; line-height: 1.6; }
+        .audio-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .audio-btn-small { background: #e2e8f0; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
         input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; box-sizing: border-box; }
         .hidden { display: none; }
     </style>
@@ -18,14 +20,22 @@
 <div class="container">
     <div id="start-screen" class="screen active">
         <h1>Simulado: 12 Casos Clínicos</h1>
-        <p>Treine o raciocínio clínico integrando história, exame físico e ausculta.</p>
+        <p>Treine sua audição antes de começar o simulado:</p>
+        
+        <div class="audio-list">
+            <button class="audio-btn-small" onclick="new Audio('estenose_aortica.mp3').play()">🔊 Estenose Aórtica</button>
+            <button class="audio-btn-small" onclick="new Audio('Regurgitacao_aortica.mp3').play()">🔊 Regurgitação Aórtica</button>
+            <button class="audio-btn-small" onclick="new Audio('Regurgitacao_mitral.mp3').play()">🔊 Insuficiência Mitral</button>
+            <button class="audio-btn-small" onclick="new Audio('estenose_mitral.mp3').play()">🔊 Estenose Mitral</button>
+        </div>
+
         <button class="btn" onclick="startQuiz()">Começar Simulado Aleatório</button>
     </div>
     <div id="game-screen" class="screen">
         <div class="case-box" id="case-text"></div>
-        <button class="btn" style="background:#475569" onclick="playCurrentAudio()">Ouvir áudio 🎧</button>
+        <button class="btn" style="background:#475569" onclick="playCurrentAudio()">Ouvir áudio do caso 🎧</button>
         <audio id="main-audio"></audio>
-        <input type="text" id="user-answer" placeholder="Digite o diagnóstico (Estenose Aortica, Regurgitacao Aortica, Regurgitacao Mitral ou Estenose Mitral)...">
+        <input type="text" id="user-answer" placeholder="Digite o diagnóstico...">
         <div id="feedback" style="text-align:center; margin:10px 0; font-weight:bold;"></div>
         <button id="check-btn" class="btn" onclick="checkAnswer()">Conferir Resposta</button>
         <button id="next-btn" class="btn hidden" onclick="nextQuestion()">Próximo Caso ➡️</button>
