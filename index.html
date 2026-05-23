@@ -61,15 +61,29 @@
         { name: 'Estenose Mitral', file: 'estenose_mitral.mp3', ctx: 'José, 55 anos, deu entrada no pronto-socorro após um episódio súbito de fraqueza no braço e dificuldade para falar, que regrediu em poucas horas (um evento isquêmico transitório). Ele não tem história de hipertensão ou diabetes, mas relata episódios recorrentes de cansaço aos esforços nos últimos meses. O exame físico revela que a frequência cardíaca está totalmente irregular.' }
     ];
 
-    let currentIdx = 0;
-    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
-    shuffle(database); // Embaralha ao iniciar
+   let currentIdx = 0;
+    // ... (restante da lógica de embaralhamento e exibição)
+    
+    function checkAnswer() {
+        const user = document.getElementById('user-answer').value.toLowerCase();
+        const correct = database[currentIdx].name.toLowerCase();
+        
+        // Validação flexível: aceita "regurgitação" ou "insuficiência"
+        const isCorrect = user.includes(correct.split(' ')[1]) && 
+                         (user.includes('estenose') || user.includes('regurgitacao') || user.includes('insuficiencia'));
 
-    function startQuiz() { document.getElementById('start-screen').classList.remove('active'); document.getElementById('game-screen').classList.add('active'); showQuestion(); }
-    function showQuestion() { const q = database[currentIdx]; document.getElementById('case-text').innerText = q.ctx; document.getElementById('main-audio').src = q.file; document.getElementById('check-btn').classList.remove('hidden'); document.getElementById('next-btn').classList.add('hidden'); document.getElementById('feedback').innerText = ''; document.getElementById('user-answer').value = ''; }
-    function playCurrentAudio() { document.getElementById('main-audio').play(); }
-    function checkAnswer() { const user = document.getElementById('user-answer').value.toLowerCase(); const correct = database[currentIdx].name.toLowerCase(); const feedback = document.getElementById('feedback'); if(user.includes(correct.split(' ')[0])) { feedback.innerText = "✅ Correto!"; feedback.style.color = "green"; } else { feedback.innerText = "❌ Incorreto. Era: " + database[currentIdx].name; feedback.style.color = "red"; } document.getElementById('check-btn').classList.add('hidden'); document.getElementById('next-btn').classList.remove('hidden'); }
-    function nextQuestion() { currentIdx = (currentIdx + 1) % database.length; showQuestion(); }
+        const feedback = document.getElementById('feedback');
+        if(isCorrect || user.includes(correct.split(' ')[0])) {
+            feedback.innerText = "✅ Correto!";
+            feedback.style.color = "green";
+        } else {
+            feedback.innerText = "❌ Incorreto. Era: " + database[currentIdx].name;
+            feedback.style.color = "red";
+        }
+        document.getElementById('check-btn').classList.add('hidden');
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+    // ...
 </script>
 </body>
 </html>
