@@ -20,17 +20,16 @@
 <div class="container">
     <div id="start-screen" class="screen active">
         <h1>Simulado: 12 Casos Clínicos</h1>
-        <p>Treine sua audição antes de começar o simulado:</p>
-        
+        <p>Treine sua audição antes de começar:</p>
         <div class="audio-list">
             <button class="audio-btn-small" onclick="new Audio('estenose_aortica.mp3').play()">🔊 Estenose Aórtica</button>
             <button class="audio-btn-small" onclick="new Audio('Regurgitacao_aortica.mp3').play()">🔊 Regurgitação Aórtica</button>
             <button class="audio-btn-small" onclick="new Audio('Regurgitacao_mitral.mp3').play()">🔊 Insuficiência Mitral</button>
             <button class="audio-btn-small" onclick="new Audio('estenose_mitral.mp3').play()">🔊 Estenose Mitral</button>
         </div>
-
         <button class="btn" onclick="startQuiz()">Começar Simulado Aleatório</button>
     </div>
+
     <div id="game-screen" class="screen">
         <div class="case-box" id="case-text"></div>
         <button class="btn" style="background:#475569" onclick="playCurrentAudio()">Ouvir áudio do caso 🎧</button>
